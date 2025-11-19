@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  pocketbase:
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    container_name: pocketbase
+    ports:
+      - "8080:8080"
+    volumes:
+      - pocketbase_data:/pb/pb_data
+    networks:
+      - app-network
+
+  web:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: image-gallery-web
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app/uploads:/app/uploads
+      - ./app/public:/app/public
+    environment:
+      - POCKETBASE_URL=http://pocketbase:8080
+      - NODE_ENV=production
+    depends_on:
+      - pocketbase
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  pocketbase_data:
+

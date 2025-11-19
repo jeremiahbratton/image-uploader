@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Image Upload</h1>
+            <nav>
+                <a href="/index.html">Upload</a>
+                <a href="/gallery.html">Gallery</a>
+            </nav>
+        </header>
+
+        <main>
+            <form id="uploadForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="image">Select Image (JPG, PNG, or GIF - Max 10MB)</label>
+                    <input type="file" id="image" name="image" accept="image/jpeg,image/jpg,image/png,image/gif" required>
+                </div>
+                <button type="submit" class="btn-primary">Upload Image</button>
+            </form>
+
+            <div id="message" class="message"></div>
+        </main>
+    </div>
+
+    <script>
+        const form = document.getElementById('uploadForm');
+        const messageDiv = document.getElementById('message');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            const fileInput = document.getElementById('image');
+            
+            if (!fileInput.files[0]) {
+                showMessage('Please select a file', 'error');
+                return;
+            }
+
+            // Check file size
+            const file = fileInput.files[0];
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            if (file.size > maxSize) {
+                showMessage('File size exceeds 10MB limit', 'error');
+                return;
+            }
+
+            messageDiv.textContent = 'Uploading...';
+            messageDiv.className = 'message info';
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showMessage('Image uploaded successfully!', 'success');
+                    form.reset();
+                } else {
+                    showMessage(data.error || 'Upload failed', 'error');
+                }
+            } catch (error) {
+                showMessage('Network error: ' + error.message, 'error');
+            }
+        });
+
+        function showMessage(text, type) {
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
+

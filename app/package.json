@@ -1,0 +1,24 @@
+{
+  "name": "image-gallery",
+  "version": "1.0.0",
+  "description": "Image upload web application with PocketBase",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build": "node scripts/build.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "pocketbase": "^0.22.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.19.12",
+    "nodemon": "^3.0.2"
+  }
+}
+
